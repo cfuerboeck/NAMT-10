@@ -571,11 +571,29 @@ class CheXpertDataset(BaseDataset, object):
             - 13: Support Devices
         :param label_filter: None or 'full' or 'competition' or list of ints
         :return: List[int] Labels to stay in the dataset.
-        """
+        """ 
+        all_labels=['No Finding',
+                    'Enlarged Cardiom.',
+                    'Cardiomegaly',
+                    'Lung Lesion',
+                    'Lung Opacity',
+                    'Edema',
+                    'Consolidation',
+                    'Pneumonia',
+                    'Atelectasis',
+                    'Pneumothorax',
+                    'Pleural Effusion',
+                    'Pleural Other',
+                    'Fracture',
+                    'Support Devices']
+        
         if label_filter == "full" or label_filter is None:
             return None
         if label_filter == "competition":
             return [2, 5, 6, 8, 10]
+        
+        label_filter = [all_labels.index(x) for x in label_filter if isinstance(x, str)]
+        
         if isinstance(label_filter, list) and isinstance(label_filter[0], int):
             return label_filter
         raise NotImplementedError
