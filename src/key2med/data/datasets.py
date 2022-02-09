@@ -1086,7 +1086,10 @@ def convert_dataset_to_h5(
     for i in tqdm(range(0, len(dataset), batch_size)):
         indices = range(i, min(len(dataset), i + batch_size))
         data_batch = [dataset[j] for j in indices]
-        images = torch.stack([item[0] for item in data_batch])
+        #images = torch.stack([item[0] for item in data_batch])
+        #dirty fix SN, sometimes item is not tuple(im,label) but list [tuple(im,label)]
+        images = torch.stack([item[0][0] if isinstance(item, list) else item[0] for item in data_batch])
+        
         if i == 0:
             print(images.shape)
             print(dataset.image_dim)
@@ -1102,7 +1105,9 @@ def convert_dataset_to_h5(
             f_images["data"][-images.shape[0] :] = images
 
         if f_labels is not None:
-            labels = torch.stack([item[1] for item in data_batch])
+            # labels = torch.stack([item[1] for item in data_batch])
+            #dirty fix SN, sometimes item is not tuple(im,label) but list [tuple(im,label)]
+            labels = torch.stack([item[0][1] if isinstance(item, list) else item[1] for item in data_batch])
             if i == 0:
                 f_labels.create_dataset(
                     "data",
