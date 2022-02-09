@@ -11,3 +11,7 @@ coloredlogs==15.0.1
 dataclasses==0.8
 Pillow==9.0.1
 scikit_learn==1.0.2
+logging==0.5.1.2
+argparse==1.1
+json==2.0.9
+timm==0.4.9
