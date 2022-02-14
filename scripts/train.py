@@ -16,7 +16,7 @@ from tqdm import tqdm
 import timm
 import timm.optim
 
-from CBRTiny import CBRTiny
+from key2med.models.CBRTiny import CBRTiny
 
 from sklearn.metrics import (
     accuracy_score,
