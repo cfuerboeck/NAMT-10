@@ -90,12 +90,6 @@ def parse_args():
     parser.add_argument('--eval-steps', type=int, default=500,
                         help='Number of batches/steps to eval. Default 500.')
    
-    
-    parser.add_argument('--perc-training-end-warmup', type=float, default=10,
-                        help='Percent of traning when warmup shall stop. Default: 10')  # https://arxiv.org/pdf/1801.06146.pdf triangular cut_frac=0.1
-    parser.add_argument('--factor-lr-smaller-at-first-layer', type=float, default=-1,
-                        help='Factor with wich the first layer learning rate ist smaller. Rest increasing to standard learning rate. Default: -1 (not different)')
-    
     # parser.add_argument('--fp16', action='store_true',
     #                     help='Train with fp16 precision.')
     parser.add_argument('--do-weight-loss-even', action='store_true',
@@ -253,7 +247,7 @@ def main():
         model = timm.create_model(args.model, num_classes=2, in_chans=args.channel_in, pretrained=True).to(args.device)
     
     if args.model_to_load_dir is not None:
-        checkpoint = torch.load(osp.join(args.snapshot_dir, 'best_model.pth'))
+        checkpoint = torch.load(osp.join(args.model_to_load_dir, 'best_model.pth'))
         model.load_state_dict(checkpoint['model_state_dict'])
     
     if args.freeze:
@@ -366,7 +360,8 @@ def main():
                         else:
                             eval_steps_since_last_better_model += 1
                             
-                    if eval_steps_since_last_better_model >= args.early_stopping_patience: break
+                    if args.do_early_stopping:
+                        if eval_steps_since_last_better_model >= args.early_stopping_patience: break
 
                 if steps >= num_steps: break
             
